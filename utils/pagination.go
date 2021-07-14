@@ -1,20 +1,22 @@
 package utils
 
 import(
-	"serviceOpname-v2/config/entity"
+	"serviceOpname-v2/config/entity/helper"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GeneratePaginationFromRequest(c *gin.Context) entity.Pagination {
+func GeneratePaginationFromRequest(c *gin.Context) helper.Pagination {
 	// initializing default
 	//var mode string
 
-	limit := 2
+	limit := 10
 	page := 1
-	sort := "created_at asc"
+	sort := "id desc"
+	
 	query := c.Request.URL.Query()
+
 	for key, value := range query {
 		queryValue := value[len(value)-1]
 		switch key {
@@ -30,7 +32,7 @@ func GeneratePaginationFromRequest(c *gin.Context) entity.Pagination {
 		}
 	}
 
-	return entity.Pagination{
+	return helper.Pagination{
 		Limit: limit,
 		Page: page,
 		Sort: sort,

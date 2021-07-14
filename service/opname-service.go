@@ -7,7 +7,7 @@ import(
 	"github.com/mashingan/smapping"
 	"serviceOpname-v2/controller/dto"
 	"serviceOpname-v2/config/entity"
-	// "serviceOpname-v2/config/entity/helper"
+	"serviceOpname-v2/config/entity/helper"
 	"serviceOpname-v2/repository"
 )
 
@@ -16,6 +16,7 @@ type OpnameService interface {
 	All() []entity.Opname
 	FindById(opnameID uint64) entity.Opname
 	IsAllowedToEdit(userID string, opnameID uint64) bool
+	GetPaginate() (repository.RepositoryResult, int)
 }
 
 type opnameService struct {
@@ -50,4 +51,8 @@ func (service *opnameService) IsAllowedToEdit(userID string, opnameID uint64) bo
 	b := service.opnameRepository.FindOpnameByID(opnameID)
 	id := fmt.Sprintf("%v", b.UserID)
 	return userID == id
+}
+
+func (service *opnameService) GetPaginate() (repository.RepositoryResult, int){
+	return service.opnameRepository.Pagination()
 }

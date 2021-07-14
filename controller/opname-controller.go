@@ -7,6 +7,8 @@ import(
 
 	"github.com/gin-gonic/gin"
 	"serviceOpname-v2/service"
+	"serviceOpname-v2/utils"
+	"serviceOpname-v2/repository"
 	"serviceOpname-v2/config/entity"
 	"serviceOpname-v2/controller/dto"
 	"serviceOpname-v2/config/entity/helper"
@@ -18,6 +20,7 @@ type OpnameController interface {
 	All(context *gin.Context)
 	FindById(context *gin.Context)
 	Update(context *gin.Context)
+	Paginates(context *gin.Context)
 }
 
 type opnameController struct {
@@ -112,3 +115,57 @@ func (c *opnameController) Update(context *gin.Context) {
 		context.JSON(http.StatusForbidden, response)
 	}
 }
+
+func (c *opnameController) Paginates(context *gin.Context){
+	
+	pagination := utils.GeneratePaginationFromRequest(context)
+	
+	operationResult, totalPages := c.opnameService.GetPaginate()
+
+	if operationResult.Error != nil {
+		res := helper.BuildErrorResponse("Data not found", "No data with given id", helper.EmptyObj{})
+		context.JSON(http.StatusNotFound, res)
+		return
+	}
+
+	var data = operationResult.Result.(helper.Pagination)
+
+	urlPath := context.Request.URL.Path
+	searchQueryParams := ""
+	
+	data.FirstPage = fmt.Sprintf("%s?limit=%d&page=%d&sort=%s", urlPath, pagination.Limit, 0, pagination.Sort) + searchQueryParams
+	data.LastPage = fmt.Sprintf("%s?limit=%d&page=%d&sort=%s", urlPath, pagination.Limit, totalPages, pagination.Sort) + searchQueryParams
+
+	if data.Page > 0 {
+		data.PreviousPage = fmt.Sprintf("%s?limit=%d&page=%d&sort=%s", urlPath, pagination.Limit, data.Page-1, pagination.Sort) + searchQueryParams
+	}
+
+	if data.Page < totalPages {
+		data.NextPage = fmt.Sprintf("%s?limit=%d&page=%d&sort=%s", urlPath, pagination.Limit, data.Page+1, pagination.Sort) + searchQueryParams
+	}
+
+	if data.Page > totalPages {
+		data.PreviousPage = ""
+	}
+
+	res := helper.BuildResponse(true, "OK", data)
+	context.JSON(http.StatusOK, res)
+}
+
+//jangan dibacaaa
+// func GetAllOpnames(context *gin.Context){
+// 	pagination := utils.GeneratePaginationFromRequest(context)
+// 	var opname entity.Opname
+// 	opnameList, err := repository.OpnameRepository.GetAllOpname(repository.OpnameRepository, &opname, &pagination)
+
+// 	if err != nil {
+// 		context.JSON(http.StatusBadRequest, gin.H{
+// 			"error": err,
+// 		})
+// 		return
+
+// 	}
+// 	context.JSON(http.StatusOK, gin.H{
+// 		"data": opnameList,
+// 	})
+// }
