@@ -54,5 +54,5 @@ func (service *opnameService) IsAllowedToEdit(userID string, opnameID uint64) bo
 }
 
 func (service *opnameService) GetPaginate(pagination helper.Pagination) (repository.RepositoryResult, int){
-	return service.opnameRepository.Pagination()
+	return service.opnameRepository.Pagination(pagination)
 }

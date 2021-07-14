@@ -8,7 +8,7 @@ import(
 	"github.com/gin-gonic/gin"
 	"serviceOpname-v2/service"
 	"serviceOpname-v2/utils"
-	"serviceOpname-v2/repository"
+	// "serviceOpname-v2/repository"
 	"serviceOpname-v2/config/entity"
 	"serviceOpname-v2/controller/dto"
 	"serviceOpname-v2/config/entity/helper"
@@ -123,7 +123,7 @@ func (c *opnameController) Paginates(context *gin.Context){
 	operationResult, totalPages := c.opnameService.GetPaginate(pagination)
 
 	if operationResult.Error != nil {
-		res := helper.BuildErrorResponse("Data not found", "No data with given id", helper.EmptyObj{})
+		res := helper.BuildErrorResponse("Data not found", "No data with your request", helper.EmptyObj{})
 		context.JSON(http.StatusNotFound, res)
 		return
 	}
@@ -134,8 +134,8 @@ func (c *opnameController) Paginates(context *gin.Context){
 	searchQueryParams := ""
 
 	data.FirstPage = fmt.Sprintf("%s?limit=%d&page=%d&sort=%s", urlPath, pagination.Limit, 0, pagination.Sort) + searchQueryParams
+	// fmt.Println("\n \n query value ", fmt.Sprintf("%#v", data.FirstPage))
 
-	data.FirstPage = fmt.Sprintf("%s?limit=%d&page=%d&sort=%s", urlPath, pagination.Limit, 0, pagination.Sort) + searchQueryParams
 	data.LastPage = fmt.Sprintf("%s?limit=%d&page=%d&sort=%s", urlPath, pagination.Limit, totalPages, pagination.Sort) + searchQueryParams
 
 	if data.Page > 0 {

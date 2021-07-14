@@ -46,7 +46,7 @@ func main() {
 	opnameRoutes := r.Group("/")
 	{
 		opnameRoutes.GET("/dataOpname", opnameController.All)
-		opnameRoutes.GET("/paginationOpname", opnameController.GetAllOpnames)
+		opnameRoutes.GET("/paginationOpname", opnameController.Paginates)
 		opnameRoutes.GET("/:id", opnameController.FindById)
 		opnameRoutes.PUT("/:id", opnameController.Update)
 	}

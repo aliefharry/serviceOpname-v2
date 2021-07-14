@@ -5,6 +5,7 @@ import(
 	"serviceOpname-v2/config/entity/helper"
 	"gorm.io/gorm"
 	"math"
+	"fmt"
 )
 
 type OpnameRepository interface {
@@ -69,12 +70,16 @@ func (db *opnameConnection) Pagination(pagination helper.Pagination) (Repository
 	//var pagination helper.Pagination
 
 	totalRows, totalPages, fromRow, toRow := int64(0), 0, 0, 0
-	pagination.Page = 1
+	// pagination.Page = 1
 	offset := pagination.Page * pagination.Limit
+	
+
 	// get data with limit, offset & order
 	find := db.connection.Limit(pagination.Limit).Offset(offset).Order(pagination.Sort)
+
 	find = find.Find(&contacts)
-	// has error find data
+	fmt.Println("\n \n query value ", fmt.Sprintf("%#v", &contacts))
+	// has error find dataa
 	errFind := find.Error
 
 	if errFind != nil {
@@ -82,6 +87,7 @@ func (db *opnameConnection) Pagination(pagination helper.Pagination) (Repository
 	}
 
 	pagination.Rows = contacts
+
 	// count all data
 	errCount := db.connection.Model(&entity.Opname{}).Count(&totalRows).Error
 
@@ -110,6 +116,7 @@ func (db *opnameConnection) Pagination(pagination helper.Pagination) (Repository
 	}
 	pagination.FromRow = fromRow
 	pagination.ToRow = toRow
+	pagination.TotalPages = totalPages
 
 	return RepositoryResult{Result: pagination}, totalPages
 }

@@ -11,6 +11,7 @@ type Pagination struct {
 	LastPage     string      `json:"last_page"`
 	FromRow      int         `json:"from_row"`
 	ToRow        int         `json:"to_row"`
+	TotalPages   int    	 `json:"total_pages"`
 	Rows         interface{} `json:"rows"`
 	// Searchs      []Search    `json:"searchs"`
 }
