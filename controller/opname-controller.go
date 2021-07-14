@@ -120,7 +120,7 @@ func (c *opnameController) Paginates(context *gin.Context){
 	
 	pagination := utils.GeneratePaginationFromRequest(context)
 	
-	operationResult, totalPages := c.opnameService.GetPaginate()
+	operationResult, totalPages := c.opnameService.GetPaginate(pagination)
 
 	if operationResult.Error != nil {
 		res := helper.BuildErrorResponse("Data not found", "No data with given id", helper.EmptyObj{})
@@ -132,7 +132,9 @@ func (c *opnameController) Paginates(context *gin.Context){
 
 	urlPath := context.Request.URL.Path
 	searchQueryParams := ""
-	
+
+	data.FirstPage = fmt.Sprintf("%s?limit=%d&page=%d&sort=%s", urlPath, pagination.Limit, 0, pagination.Sort) + searchQueryParams
+
 	data.FirstPage = fmt.Sprintf("%s?limit=%d&page=%d&sort=%s", urlPath, pagination.Limit, 0, pagination.Sort) + searchQueryParams
 	data.LastPage = fmt.Sprintf("%s?limit=%d&page=%d&sort=%s", urlPath, pagination.Limit, totalPages, pagination.Sort) + searchQueryParams
 

@@ -11,7 +11,7 @@ type OpnameRepository interface {
 	AllOpname() []entity.Opname
 	UpdateOpname(b entity.Opname) entity.Opname
 	FindOpnameByID(opnameID uint64) entity.Opname
-	Pagination() (RepositoryResult, int)
+	Pagination(pagination helper.Pagination) (RepositoryResult, int)
 	// GetAllOpname(opname *entity.Opname, pagination *helper.Pagination) (*[]entity.Opname, error)
 }
 
@@ -64,15 +64,15 @@ func (db *opnameConnection) AllOpname() []entity.Opname {
 // 	return &opnames, nil
 // }
 
-func (db *opnameConnection) Pagination() (RepositoryResult, int) {
+func (db *opnameConnection) Pagination(pagination helper.Pagination) (RepositoryResult, int) {
 	var contacts []entity.Opname
-	var pagination helper.Pagination
+	//var pagination helper.Pagination
 
 	totalRows, totalPages, fromRow, toRow := int64(0), 0, 0, 0
 	pagination.Page = 1
 	offset := pagination.Page * pagination.Limit
 	// get data with limit, offset & order
-	find := db.connection.Limit(10).Offset(offset).Order("id desc")
+	find := db.connection.Limit(pagination.Limit).Offset(offset).Order(pagination.Sort)
 	find = find.Find(&contacts)
 	// has error find data
 	errFind := find.Error

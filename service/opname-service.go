@@ -16,7 +16,7 @@ type OpnameService interface {
 	All() []entity.Opname
 	FindById(opnameID uint64) entity.Opname
 	IsAllowedToEdit(userID string, opnameID uint64) bool
-	GetPaginate() (repository.RepositoryResult, int)
+	GetPaginate(param helper.Pagination) (repository.RepositoryResult, int)
 }
 
 type opnameService struct {
@@ -53,6 +53,6 @@ func (service *opnameService) IsAllowedToEdit(userID string, opnameID uint64) bo
 	return userID == id
 }
 
-func (service *opnameService) GetPaginate() (repository.RepositoryResult, int){
+func (service *opnameService) GetPaginate(pagination helper.Pagination) (repository.RepositoryResult, int){
 	return service.opnameRepository.Pagination()
 }
